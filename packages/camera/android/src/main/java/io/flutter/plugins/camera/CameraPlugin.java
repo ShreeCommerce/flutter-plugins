@@ -242,6 +242,26 @@ public class CameraPlugin implements MethodCallHandler {
           }
           break;
         }
+      case "turnOnFlash":
+      {
+        try{
+          camera.turnOnFlash();
+          result.success(null);
+        } catch (CameraAccessException e) {
+          result.error("CameraAccess", e.getMessage(), null);
+        }
+        break;
+      }
+      case "turnOffFlash":
+      {
+        try{
+          camera.turnOffFlash();
+          result.success(null);
+        } catch (CameraAccessException e) {
+          result.error("CameraAccess", e.getMessage(), null);
+        }
+        break;
+      }
       case "dispose":
         {
           if (camera != null) {
@@ -866,6 +886,18 @@ public class CameraPlugin implements MethodCallHandler {
             }
           },
           null);
+    }
+
+    private void turnOnFlash() throws CameraAccessException{
+      captureRequestBuilder.set(CaptureRequest.FLASH_MODE, CaptureRequest.FLASH_MODE_TORCH);
+      captureRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON);
+      cameraCaptureSession.setRepeatingRequest(captureRequestBuilder.build(), null, null);
+    }
+
+    private void turnOffFlash() throws CameraAccessException{
+      captureRequestBuilder.set(CaptureRequest.FLASH_MODE, CaptureRequest.FLASH_MODE_OFF);
+      captureRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_OFF);
+      cameraCaptureSession.setRepeatingRequest(captureRequestBuilder.build(), null, null);
     }
 
     private void sendErrorEvent(String errorDescription) {
